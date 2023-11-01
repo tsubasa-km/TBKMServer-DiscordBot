@@ -4,8 +4,9 @@ const { clientId, token } = require('./config.json');
 
 function deploy(client, guild = null) {
 	const commands = [
-		new SlashCommandBuilder().setName('radio').setDescription('クマラジを作成します。')
-		,
+		new SlashCommandBuilder().setName('radio').setDescription('クマラジを作成します。'),
+		new SlashCommandBuilder().setName('splatoon').setDescription('予定を表示します。'),
+		new SlashCommandBuilder().setName('test').setDescription('てすと'),
 	]
 		.map(command => command.toJSON());
 

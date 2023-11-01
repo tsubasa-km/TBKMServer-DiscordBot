@@ -1,7 +1,9 @@
-const { Client, GatewayIntentBits, } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const { token, thread_channelIds } = require('./config.json');
 
-const { deploy } = require("./deploy-commands")
+const { deploy } = require("./deploy-commands");
+const { get_schedule } = require('./splatoon');
+
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -10,17 +12,19 @@ function createThread(addDays = 0, channel_id = null) {
     console.log(addDays)
     if (channel_id) {
         const channel = client.channels.cache.get(channel_id);
+        date.setDate(date.getDate() + addDays);
         channel.threads.create({
-            name: `クマラジ ${date.getMonth() + 1}.${date.getDate() + addDays}`,
+            name: `クマラジ ${date.getMonth() + 1}.${date.getDate()}`,
             autoArchiveDuration: 60,
             reason: '',
         });
-        return
+        return;
     }
     thread_channelIds.forEach(thread_channelId => {
         const channel = client.channels.cache.get(thread_channelId);
+        date.setDate(date.getDate() + addDays);
         channel.threads.create({
-            name: `クマラジ ${date.getMonth() + 1}.${date.getDate() + addDays}`,
+            name: `クマラジ ${date.getMonth() + 1}.${date.getDate()}`,
             autoArchiveDuration: 60,
             reason: '',
         });
@@ -51,18 +55,17 @@ client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
 
     if (commandName === 'radio') {
-        createThread(0, interaction.channel.id)
-        await interaction.reply("クマラジを作成します。")
-        await new Promise(s => setTimeout(s, 5000))
-        await interaction.deleteReply()
+        await interaction.reply("クマラジを作成します。");
+        await new Promise(s => setTimeout(s, 1000));
+        await interaction.deleteReply();
+        createThread(0, interaction.channel.id);
     }
-    // if (commandName === 'schedule'){
-    //     const cron = require('node-cron');
-    //     cron.schedule('0 0 22 * * *', () => { createThread(1) });
-    //     await interaction.reply("毎日22時にクマラジを作成します。")
-    //     await new Promise(s => setTimeout(s, 5000))
-    //     await interaction.deleteReply()
-    // }
+    if (commandName === 'splatoon'){
+        await interaction.reply("スプラトゥーン３のステージを取得します。");
+        await new Promise(s => setTimeout(s, 1000));
+        await interaction.deleteReply();
+        await get_schedule(client, interaction.channel.id)
+    }
 });
 
 client.login(token);
