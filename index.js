@@ -1,9 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { token, thread_channelIds } = require('./config.json');
 
-const { deploy } = require("./deploy-commands");
-const { get_schedule } = require('./splatoon');
-
+const { deploy } = require("./source/deploy-commands");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -51,20 +49,15 @@ client.on('threadCreate', async thread => {
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
-
     const { commandName } = interaction;
-
-    if (commandName === 'radio') {
-        await interaction.reply("クマラジを作成します。");
-        await new Promise(s => setTimeout(s, 1000));
-        await interaction.deleteReply();
-        createThread(0, interaction.channel.id);
-    }
-    if (commandName === 'splatoon'){
-        await interaction.reply("スプラトゥーン３のステージを取得します。");
-        await new Promise(s => setTimeout(s, 1000));
-        await interaction.deleteReply();
-        await get_schedule(client, interaction.channel.id)
+    switch (commandName){
+        case "radio":{
+            await interaction.reply("クマラジを作成します。");
+            await new Promise(s => setTimeout(s, 1000));
+            await interaction.deleteReply();
+            createThread(0, interaction.channel.id);
+            break;
+        }
     }
 });
 
