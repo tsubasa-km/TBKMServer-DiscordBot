@@ -1,38 +1,22 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const { token, thread_channelIds } = require('./config.json');
+const {glob} = require("glob");
 
+const { token } = require('./config.json');
 const { deploy } = require("./source/deploy-commands");
+const commands = [
+    require("./commands/radio"),
+    require("./commands/channel"),
+];
+const {createKumaRadio} = require("./source/kuma-radio");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-function createThread(addDays = 0, channel_id = null) {
-    let date = new Date()
-    console.log(addDays)
-    if (channel_id) {
-        const channel = client.channels.cache.get(channel_id);
-        date.setDate(date.getDate() + addDays);
-        channel.threads.create({
-            name: `クマラジ ${date.getMonth() + 1}.${date.getDate()}`,
-            autoArchiveDuration: 60,
-            reason: '',
-        });
-        return;
-    }
-    thread_channelIds.forEach(thread_channelId => {
-        const channel = client.channels.cache.get(thread_channelId);
-        date.setDate(date.getDate() + addDays);
-        channel.threads.create({
-            name: `クマラジ ${date.getMonth() + 1}.${date.getDate()}`,
-            autoArchiveDuration: 60,
-            reason: '',
-        });
-    })
-}
-
 client.once('ready', () => {
-    deploy(client)
+    // コマンド登録
+    deploy(client,commands.map(cmd=>cmd.data));
+    // 定期実行開始
     const cron = require('node-cron');
-    cron.schedule('0 0 22 * * *', () => { createThread(1) });
+    cron.schedule('0 0 22 * * *', () => { createKumaRadio(client,1) });
     console.log('Ready!');
 });
 
@@ -42,6 +26,7 @@ client.on('guildCreate', guild => {
 })
 
 client.on('threadCreate', async thread => {
+    // クマラジの場合
     if (thread.name.includes("クマラジ")) {
         thread.send("クマラジ!!")
     }
@@ -50,15 +35,12 @@ client.on('threadCreate', async thread => {
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
     const { commandName } = interaction;
-    switch (commandName){
-        case "radio":{
-            await interaction.reply("クマラジを作成します。");
-            await new Promise(s => setTimeout(s, 1000));
-            await interaction.deleteReply();
-            createThread(0, interaction.channel.id);
-            break;
+    // スラッシュコマンド
+    commands.forEach(cmd=>{
+        if(cmd.data.name === commandName){
+            cmd.execute(interaction,client);
         }
-    }
+    });
 });
 
 client.login(token);
