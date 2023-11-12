@@ -6,6 +6,7 @@ const { deploy } = require("./source/deploy-commands");
 const commands = [
     require("./commands/radio"),
     require("./commands/channel"),
+    require("./commands/splatoon"),
 ];
 const { createKumaRadio } = require("./source/kuma-radio");
 

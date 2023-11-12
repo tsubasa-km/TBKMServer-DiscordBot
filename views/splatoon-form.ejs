@@ -3,9 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="/public/css/splatoon-form.css">
+    <title>ステージ選択</title>
 </head>
 <body>
-    <h1>splatoon3 info setting</h1>
+    <ul class="stages">
+    <% var mode = params.mode %>
+    <% data.stage.forEach(stage => { %>
+        <% if(mode === "favorite"){ %>
+        <% let is_active = splaData.stage.favorite.includes(stage.name) ? "active":"" %>
+        <li class="stage <%= is_active %>">
+            <img src="<%= stage.image %>" alt="">
+            <p><%= stage.name %></p>
+        </li>
+        <% } else{ %>
+        <% let is_active = splaData.stage.unfavorite.includes(stage.name) ? "active":"" %>
+        <li class="stage <%= is_active %>">
+            <img src="<%= stage.image %>" alt="">
+            <p><%= stage.name %></p>
+        </li>
+        <% } %>
+    <% }) %>
+    </ul>
+    <button type="button" id="send">決定</button>
+    <form name="data_form" action="/wb-discord-bot/splatoon/stage-select" method="post" hidden>
+        <input type="text" name="send-data" id="send-data" hidden value="<%= JSON.stringify(splaData) %>">
+    </form>
 </body>
 </html>
+<script>
+    const stages = document.querySelectorAll("li.stage");
+    stages.forEach(stage=>{
+        stage.addEventListener("click",() => {
+            stage.classList.toggle("active");
+        })
+    })
+    const send_button = document.querySelector("#send");
+    send_button.addEventListener("click",()=>{
+        data = []
+        stages.forEach(stage=>{
+            if(stage.classList.contains("active")){
+                data.push(stage.querySelector("p").innerHTML);
+            }
+        })
+        const send_data = document.querySelector("input#send-data");
+        v = JSON.parse(send_data.value);
+        v.stage[location.href.split("/")[location.href.split("/").length-1]] = data;
+        send_data.value = JSON.stringify(v);
+        console.log(send_data.value)
+        document.data_form.submit();
+    })
+</script>
