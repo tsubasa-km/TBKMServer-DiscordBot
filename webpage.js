@@ -10,7 +10,7 @@ function webpage(){
 
     /* 2. listen()メソッドを実行して3000番ポートで待ち受け。*/
     var server = app.listen(3000, function(){
-        console.log(`start listening http://localhost:${server.address().port}/`);
+        console.log(`start listening http://localhost:${server.address().port}${homeURL}`);
     });
     app.set('view engine', 'ejs');
     app.use("/public", express.static(__dirname + "/public"));

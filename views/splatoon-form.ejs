@@ -25,7 +25,9 @@
         <% } %>
     <% }) %>
     </ul>
-    <button type="button" id="send">決定</button>
+    <div class="button-wrapper">
+        <button type="button" id="send">決定</button>
+    </div>
     <form name="data_form" action="/wb-discord-bot/splatoon/stage-select" method="post" hidden>
         <input type="text" name="send-data" id="send-data" hidden value="<%= JSON.stringify(splaData) %>">
     </form>
