@@ -11,7 +11,7 @@ module.exports = {
         const operator = interaction.options.getSubcommand();
         await interaction.reply(
             "設定は下記のURLからできます。\n"+
-            "お気に入りのステージ :\n\thttp://157.7.206.176/wb-discord-bot/splatoon/stage-select/favorite\n"+
-            "苦手なステージ : \n\thttp://157.7.206.176/wb-discord-bot/splatoon/stage-select/favorite");
+            "お気に入りのステージ :\n\thttp://winged-bear.com/wb-discord-bot/splatoon/stage-select/favorite\n"+
+            "苦手なステージ : \n\thttp://winged-bear.com/wb-discord-bot/splatoon/stage-select/favorite");
     }
 }
