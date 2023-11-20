@@ -13,7 +13,8 @@ function webpage(){
     var server = app.listen(3000, function(){
         console.log(`start listening http://localhost:${server.address().port}${homeURL}`);
     });
-    app.engine('ejs', ejs.renderFile);
+    app.set('view engine', 'ejs');
+    app.set('views', __dirname + '/views');
     app.use("/public", express.static(__dirname + "/public"));
     app.use(bodyParser.urlencoded({ extended: true }))
 
