@@ -1,10 +1,11 @@
 const request = require("request");
 const bodyParser = require('body-parser')
+const express = require("express");
+var ejs = require("ejs");
 
 const {JsonDBManager} = require("./source/util");
 
 function webpage(){
-    const express = require("express");
     const app = express();
     const homeURL = "/wb-discord-bot";
 
@@ -12,7 +13,7 @@ function webpage(){
     var server = app.listen(3000, function(){
         console.log(`start listening http://localhost:${server.address().port}${homeURL}`);
     });
-    app.set('view engine', 'ejs');
+    app.engine('ejs', ejs.renderFile);
     app.use("/public", express.static(__dirname + "/public"));
     app.use(bodyParser.urlencoded({ extended: true }))
 
