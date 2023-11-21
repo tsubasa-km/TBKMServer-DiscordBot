@@ -1,14 +1,16 @@
 const { Client, GatewayIntentBits } = require('discord.js');
+const cron = require('node-cron');
 
 const { token } = require('./config.json');
 const { webpage } = require("./webpage");
 const { deploy } = require("./source/deploy-commands");
+const { splatoonSubscribe } = require("./source/splatoon");
+const { kumaRadioSubscribe } = require("./source/kuma-radio");
 const commands = [
     require("./commands/radio"),
     require("./commands/channel"),
     require("./commands/splatoon"),
 ];
-const { createKumaRadio } = require("./source/kuma-radio");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -16,8 +18,8 @@ client.once('ready', () => {
     // コマンド登録
     deploy(client, commands.map(cmd => cmd.data));
     // 定期実行開始
-    const cron = require('node-cron');
-    cron.schedule('0 0 22 * * *', () => { createKumaRadio(client, 1) });
+    cron.schedule('0 0 22 * * *', () => { kumaRadioSubscribe(client, 1) });
+    cron.schedule('0 30 9 * * *', () => { splatoonSubscribe(client) });
     console.log('Ready!');
 });
 

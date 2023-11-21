@@ -8,7 +8,7 @@ module.exports = {
         .setDescription("チャンネルの設定をします。")
         .addSubcommandGroup(subcommandgroup=>
             subcommandgroup
-                .setName("set")
+                .setName("subscribe")
                 .setDescription("選択してください。")
                 .addSubcommand(subcommand=>
                     subcommand
@@ -20,7 +20,7 @@ module.exports = {
                     .setDescription('定期的にスプラトゥーンのルール、ステージ情報を送信します。')))
         .addSubcommandGroup(subcommandgroup=>
             subcommandgroup
-                .setName("remove")
+                .setName("unsubscribe")
                 .setDescription("選択してください。")
                 .addSubcommand(subcommand=>
                     subcommand
@@ -31,11 +31,11 @@ module.exports = {
                     .setName('splatoon-info')
                     .setDescription('定期的なスプラトゥーンのルール、ステージ情報の送信を停止します。'))),
     execute: async (interaction) => {
-        const db = new JsonDBManager("regular");
+        const db = new JsonDBManager("subscribe-channel");
         const channel_id = interaction.channel.id;
         const operator = interaction.options.getSubcommand();
         var msg = "設定しました。";
-        if (interaction.options.getSubcommandGroup() === "set"){
+        if (interaction.options.getSubcommandGroup() === "subscribe"){
             db.write(json_data=>{
                 json_data[operator]
                     .push(channel_id);
