@@ -18,7 +18,7 @@ client.once('ready', () => {
     // コマンド登録
     deploy(client, commands.map(cmd => cmd.data));
     // 定期実行開始
-    cron.schedule('0 0 22 * * *', () => { kumaRadioSubscribe(client, 1) });
+    cron.schedule('0 0 22 * * *', () => { kumaRadioSubscribe(client) });
     cron.schedule('0 30 9 * * *', () => { splatoonSubscribe(client) });
     console.log('Ready!');
 });
